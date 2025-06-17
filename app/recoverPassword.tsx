@@ -20,7 +20,7 @@ const RecoverPasswordScreen = () => {
         }
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: "https://SEU-SITE.vercel.app/reset", // <-- URL de redirecionamento
+            redirectTo: "https://SEU-SITE.vercel.app/resetPassword", // <-- URL de redirecionamento
         });
 
         if (error) {
