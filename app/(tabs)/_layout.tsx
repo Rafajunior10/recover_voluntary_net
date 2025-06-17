@@ -42,6 +42,10 @@ const LoginScreen = () => {
     router.push("/register");
   };
 
+    const handleNavigateToRecoverPassword = () => {
+    router.push("/recoverPassword");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -54,7 +58,7 @@ const LoginScreen = () => {
         value={email}
         onChangeText={setEmail}
       />
-      <form style = {styles.form}>
+      <form style={styles.form}>
         <TextInput
           style={styles.input}
           placeholder="Senha"
@@ -70,6 +74,9 @@ const LoginScreen = () => {
 
       <TouchableOpacity onPress={handleNavigateToRegister}>
         <Text style={styles.registerText}>Cadastrar-se</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleNavigateToRecoverPassword}>
+        <Text style={styles.registerText}>Esqueceu a Senha?</Text>
       </TouchableOpacity>
     </View>
   );

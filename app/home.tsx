@@ -49,9 +49,6 @@ const HomeScreen = () => {
       <View style={styles.navbar}>
         <Text style={styles.navTextBold}>Olá {userName || "Usuário"}!</Text>
         <View style={{ flexDirection: "row", gap: 16 }}>
-          <TouchableOpacity onPress={() => console.log("Notificações")}>
-            <Ionicons name="notifications-outline" size={24} color="white" />
-          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={async () => {
@@ -93,7 +90,7 @@ const HomeScreen = () => {
 
           <View style={[styles.card, styles.cardHalf]}>
             <Text style={styles.cardHeader}>Cooperativa Vira Lata</Text>
-            <Text style={styles.cardText}>Coleta de lixo para reciclagem</Text>
+            <Text style={styles.cardText}>Coleta de lixo</Text>
             <Text style={styles.cardSubText}>8:00 às 17:00</Text>
             <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
               <Text style={styles.cardButtonText}>Saiba mais</Text>
@@ -112,8 +109,8 @@ const HomeScreen = () => {
           </View>
 
           <View style={[styles.card, styles.cardHalf]}>
-            <Text style={styles.cardHeader}>Anjos Peludos</Text>
-            <Text style={styles.cardText}>Grupo de apoio a animais de rua e conscientização</Text>
+            <Text style={styles.cardHeader}>Coração Selvagem</Text>
+            <Text style={styles.cardText}>Grupo de apoio a animais</Text>
             <Text style={styles.cardSubText}>8:00 às 17:00</Text>
             <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
               <Text style={styles.cardButtonText}>Saiba mais</Text>
@@ -212,7 +209,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "600",
     textAlign: "left",
   },
   cardText: {
