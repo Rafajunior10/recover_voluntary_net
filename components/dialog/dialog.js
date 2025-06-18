@@ -7,8 +7,8 @@ import {
     Image,
     TextInput,
     TouchableOpacity,
-    Picker,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 const Dialog = ({ visible, onClose }) => {
     return (
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    
+
     dialog: {
         backgroundColor: "white",
         width: "85%",

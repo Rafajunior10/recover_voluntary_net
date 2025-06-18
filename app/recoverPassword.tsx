@@ -9,6 +9,7 @@ import {
     Alert,
 } from "react-native";
 import { supabase } from "./lib/supabase";
+import uuid from 'react-native-uuid';
 
 const RecoverPasswordScreen = () => {
     const [email, setEmail] = useState("");
@@ -19,18 +20,44 @@ const RecoverPasswordScreen = () => {
             return;
         }
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: "https://recover-voluntary-net.vercel.app/resetPassword"
-        });
+        // 1. Busca o usuário pelo e-mail
+        const { data: userData, error: userError } = await supabase
+            .from('users') // ou 'profiles' dependendo da sua tabela
+            .select('id')
+            .eq('email', email)
+            .single();
 
-        if (error) {
-            Alert.alert("Erro", error.message);
-        } else {
-            Alert.alert(
-                "Sucesso",
-                "E-mail de recuperação enviado. Verifique sua caixa de entrada."
-            );
+        if (userError || !userData) {
+            Alert.alert("Erro", "E-mail não encontrado.");
+            return;
         }
+
+        // 2. Gera um token único
+        const token = uuid.v4();
+
+        // 3. Salva o token no Supabase
+        const { error: insertError } = await supabase
+            .from('password_reset_tokens')
+            .insert({
+                user_id: userData.id,
+                token,
+            });
+
+        if (insertError) {
+            Alert.alert("Erro", "Erro ao salvar token.");
+            return;
+        }
+
+        // 4. Cria o link de reset (ajuste sua URL aqui)
+        const resetLink = `https://recover-voluntary-net.vercel.app/resetPassword?token=${token}`;
+
+        // 5. Simula envio de e-mail por enquanto
+        console.log("Link de redefinição:", resetLink);
+
+        Alert.alert(
+            "Sucesso",
+            "Link de recuperação gerado. (Simulação de envio de e-mail)"
+        );
     };
 
     return (

@@ -8,13 +8,20 @@ import {
     ScrollView,
     Alert,
 } from "react-native";
-import { supabase } from "./lib/supabase";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 const ResetPasswordScreen = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [token, setToken] = useState("");
     const router = useRouter();
+    const params = useLocalSearchParams(); // Pega o token da URL
+
+    useEffect(() => {
+        if (params.token) {
+            setToken(params.token.toString());
+        }
+    }, [params]);
 
     const handlePasswordReset = async () => {
         if (!newPassword || !confirmPassword) {
@@ -27,32 +34,33 @@ const ResetPasswordScreen = () => {
             return;
         }
 
-        const { data, error } = await supabase.auth.updateUser({
-            password: newPassword,
-        });
+        try {
+            const response = await fetch("https://SEU-PROJETO.vercel.app/api/reset-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token,
+                    password: newPassword,
+                }),
+            });
 
-        if (error) {
-            Alert.alert("Erro", error.message);
-        } else {
+            const data = await response.json();
+
+            if (!response.ok) {
+                Alert.alert("Erro", data.error || "Erro ao redefinir senha.");
+                return;
+            }
+
             Alert.alert("Sucesso", "Senha redefinida com sucesso.");
-            // Redireciona para login
-            router.push("/"); 
+            router.push("/"); // Redireciona pra tela inicial ou login
+            
+        } catch (error) {
+            const err = error as Error;
+            console.error("Erro:", err.message);
         }
     };
-
-    useEffect(() => {
-        const hash = window.location.hash;
-        const params = new URLSearchParams(hash.replace("#", ""));
-        const accessToken = params.get("access_token");
-
-        if (accessToken) {
-            supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: "",
-            });
-        }
-    }, []);
-
 
     return (
         <ScrollView contentContainerStyle={styles.container}>

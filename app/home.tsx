@@ -90,7 +90,7 @@ const HomeScreen = () => {
 
           <View style={[styles.card, styles.cardHalf]}>
             <Text style={styles.cardHeader}>Cooperativa Vira Lata</Text>
-            <Text style={styles.cardText}>Coleta de lixo</Text>
+            <Text style={styles.cardText}>Coleta de lixo e reciclagem</Text>
             <Text style={styles.cardSubText}>8:00 às 17:00</Text>
             <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
               <Text style={styles.cardButtonText}>Saiba mais</Text>

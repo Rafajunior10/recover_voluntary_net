@@ -58,7 +58,7 @@ const LoginScreen = () => {
         value={email}
         onChangeText={setEmail}
       />
-      <form style={styles.form}>
+      <View style={styles.form}>
         <TextInput
           style={styles.input}
           placeholder="Senha"
@@ -66,7 +66,7 @@ const LoginScreen = () => {
           value={password}
           onChangeText={setPassword}
         />
-      </form>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Entrar</Text>
