@@ -35,9 +35,24 @@ const ResetPasswordScreen = () => {
             Alert.alert("Erro", error.message);
         } else {
             Alert.alert("Sucesso", "Senha redefinida com sucesso.");
-            router.push("/"); // Redireciona para login ou home, ajuste se necessário
+            // Redireciona para login
+            router.push("/"); 
         }
     };
+
+    useEffect(() => {
+        const hash = window.location.hash;
+        const params = new URLSearchParams(hash.replace("#", ""));
+        const accessToken = params.get("access_token");
+
+        if (accessToken) {
+            supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: "",
+            });
+        }
+    }, []);
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>

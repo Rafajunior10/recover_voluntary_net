@@ -8,7 +8,7 @@ import {
     ScrollView,
     Alert,
 } from "react-native";
-import { supabase } from "./lib/supabase"; // ajuste o path se necessário
+import { supabase } from "./lib/supabase";
 
 const RecoverPasswordScreen = () => {
     const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ const RecoverPasswordScreen = () => {
         }
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: "https://recover-voluntary-net.vercel.app/app/resetPassword", // <-- URL de redirecionamento
+            redirectTo: "https://recover-voluntary-net.vercel.app/resetPassword"
         });
 
         if (error) {
