@@ -11,10 +11,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Dialog from "../components/dialog/dialog";
 import { useRouter } from "expo-router";
 import { supabase } from "../app/lib/supabase";
+import BottomNav from "../components/navBar/bottomNav";
 
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [userName, setUserName] = useState("");
+  const [searchText, setSearchText] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +32,9 @@ const HomeScreen = () => {
     }
 
     const { data, error } = await supabase
-      .from('users')
-      .select('nome')
-      .eq('user_id', user.id) // Agora seguro
+      .from("users")
+      .select("nome")
+      .eq("user_id", user.id)
       .single();
 
     if (error) {
@@ -42,14 +44,43 @@ const HomeScreen = () => {
     }
   };
 
+  const cardsData = [
+    {
+      id: 1,
+      title: "Hemocentro Unicamp",
+      description: "Doação de Sangue",
+      schedule: "8:00 às 17:00",
+    },
+    {
+      id: 2,
+      title: "Cooperativa Vira Lata",
+      description: "Coleta de lixo e reciclagem",
+      schedule: "8:00 às 17:00",
+    },
+    {
+      id: 3,
+      title: "Banco de alimentos",
+      description: "Arrecadação de alimentos",
+      schedule: "8:00 às 17:00",
+    },
+    {
+      id: 4,
+      title: "Coração Selvagem",
+      description: "Grupo de apoio a animais",
+      schedule: "8:00 às 17:00",
+    },
+  ];
+
+  const filteredCards = cardsData.filter((card) =>
+    card.title.toLowerCase().includes(searchText.toLowerCase()) ||
+    card.description.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>
-      {/* Barra superior */}
       <View style={styles.navbar}>
         <Text style={styles.navTextBold}>Olá {userName || "Usuário"}!</Text>
         <View style={{ flexDirection: "row", gap: 16 }}>
-
           <TouchableOpacity
             onPress={async () => {
               await supabase.auth.signOut();
@@ -61,7 +92,6 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* Barra de pesquisa */}
       <View style={styles.searchContainer}>
         <Ionicons
           name="search-outline"
@@ -73,71 +103,47 @@ const HomeScreen = () => {
           placeholder="Pesquisar..."
           placeholderTextColor="#666"
           style={styles.searchInput}
+          value={searchText}
+          onChangeText={setSearchText}
         />
       </View>
 
-      {/* Conteúdo */}
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.row}>
-          <View style={[styles.card, styles.cardHalf]}>
-            <Text style={styles.cardHeader}>Hemocentro Unicamp</Text>
-            <Text style={styles.cardText}>Doação de Sangue</Text>
-            <Text style={styles.cardSubText}>8:00 às 17:00</Text>
-            <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.cardButtonText}>Saiba mais</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.card, styles.cardHalf]}>
-            <Text style={styles.cardHeader}>Cooperativa Vira Lata</Text>
-            <Text style={styles.cardText}>Coleta de lixo e reciclagem</Text>
-            <Text style={styles.cardSubText}>8:00 às 17:00</Text>
-            <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.cardButtonText}>Saiba mais</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.row}>
-          <View style={[styles.card, styles.cardHalf]}>
-            <Text style={styles.cardHeader}>Banco de alimentos</Text>
-            <Text style={styles.cardText}>Arrecadação de alimentos</Text>
-            <Text style={styles.cardSubText}>8:00 às 17:00</Text>
-            <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.cardButtonText}>Saiba mais</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.card, styles.cardHalf]}>
-            <Text style={styles.cardHeader}>Coração Selvagem</Text>
-            <Text style={styles.cardText}>Grupo de apoio a animais</Text>
-            <Text style={styles.cardSubText}>8:00 às 17:00</Text>
-            <TouchableOpacity style={styles.cardButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.cardButtonText}>Saiba mais</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {filteredCards.length === 0 ? (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            Nenhum resultado encontrado.
+          </Text>
+        ) : (
+          filteredCards
+            .reduce<
+              { id: number; title: string; description: string; schedule: string }[][]
+            >((rows, card, index) => {
+              if (index % 2 === 0) {
+                rows.push(filteredCards.slice(index, index + 2));
+              }
+              return rows;
+            }, [])
+            .map((row, rowIndex) => (
+              <View style={styles.row} key={rowIndex}>
+                {row.map((card) => (
+                  <View style={[styles.card, styles.cardHalf]} key={card.id}>
+                    <Text style={styles.cardHeader}>{card.title}</Text>
+                    <Text style={styles.cardText}>{card.description}</Text>
+                    <Text style={styles.cardSubText}>{card.schedule}</Text>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => setModalVisible(true)}
+                    >
+                      <Text style={styles.cardButtonText}>Saiba mais</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            ))
+        )}
       </ScrollView>
+      <BottomNav />
 
-      {/* Navbar inferior */}
-      <View style={styles.snackbar}>
-        <TouchableOpacity style={styles.snackItem}>
-          <Ionicons name="home-outline" size={24} color="white" />
-          <Text style={styles.snackText}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.snackItem}>
-          <Ionicons name="person-outline" size={24} color="white" />
-          <Text style={styles.snackText}>Profile</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.snackItem}>
-          <Ionicons name="settings-outline" size={24} color="white" />
-          <Text style={styles.snackText}>Settings</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Modal */}
       <Dialog visible={modalVisible} onClose={() => setModalVisible(false)} />
     </View>
   );
@@ -192,10 +198,6 @@ const styles = StyleSheet.create({
   cardHalf: {
     width: "48%",
   },
-  cardFull: {
-    marginTop: 20,
-    width: "48%",
-  },
   card: {
     backgroundColor: "white",
     paddingVertical: 30,
@@ -234,23 +236,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "bold",
-  },
-  snackbar: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    height: 80,
-    backgroundColor: "#eb4f4f",
-    borderTopRightRadius: 16,
-    borderTopLeftRadius: 16,
-  },
-  snackItem: {
-    alignItems: "center",
-  },
-  snackText: {
-    color: "white",
-    fontSize: 12,
-    marginTop: 4,
   },
 });
 

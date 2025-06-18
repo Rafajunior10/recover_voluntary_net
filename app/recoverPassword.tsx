@@ -20,9 +20,8 @@ const RecoverPasswordScreen = () => {
             return;
         }
 
-        // 1. Busca o usuário pelo e-mail
         const { data: userData, error: userError } = await supabase
-            .from('users') // ou 'profiles' dependendo da sua tabela
+            .from('users')
             .select('id')
             .eq('email', email)
             .single();
@@ -32,10 +31,8 @@ const RecoverPasswordScreen = () => {
             return;
         }
 
-        // 2. Gera um token único
         const token = uuid.v4();
 
-        // 3. Salva o token no Supabase
         const { error: insertError } = await supabase
             .from('password_reset_tokens')
             .insert({
@@ -48,10 +45,8 @@ const RecoverPasswordScreen = () => {
             return;
         }
 
-        // 4. Cria o link de reset (ajuste sua URL aqui)
         const resetLink = `https://recover-voluntary-net.vercel.app/resetPassword?token=${token}`;
 
-        // 5. Simula envio de e-mail por enquanto
         console.log("Link de redefinição:", resetLink);
 
         Alert.alert(

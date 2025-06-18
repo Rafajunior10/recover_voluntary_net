@@ -15,7 +15,7 @@ const ResetPasswordScreen = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [token, setToken] = useState("");
     const router = useRouter();
-    const params = useLocalSearchParams(); // Pega o token da URL
+    const params = useLocalSearchParams();
 
     useEffect(() => {
         if (params.token) {
@@ -54,7 +54,7 @@ const ResetPasswordScreen = () => {
             }
 
             Alert.alert("Sucesso", "Senha redefinida com sucesso.");
-            router.push("/"); // Redireciona pra tela inicial ou login
+            router.push("/");
             
         } catch (error) {
             const err = error as Error;
